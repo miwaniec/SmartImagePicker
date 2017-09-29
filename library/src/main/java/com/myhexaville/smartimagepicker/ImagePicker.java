@@ -49,16 +49,38 @@ public class ImagePicker {
     private int aspectRatioY;
     private boolean withCrop;
 
+    private int cropRequestedWidth;
+    private int cropRequestedHeight;
+    private String cropActivityTitle;
+
     public ImagePicker(Activity activity, @Nullable Fragment fragment, OnImagePickedListener listener) {
         this.activity = activity;
         this.fragment = fragment;
         this.listener = listener;
+
+        // set deafult values
+        this.aspectRatioX = 1;
+        this.aspectRatioY = 1;
+        this.cropRequestedWidth = 0;
+        this.cropRequestedHeight = 0;
+        this.cropActivityTitle = "";
     }
 
     public ImagePicker setWithImageCrop(int aspectRatioX, int aspectRatioY) {
         withCrop = true;
         this.aspectRatioX = aspectRatioX;
         this.aspectRatioY = aspectRatioY;
+        return this;
+    }
+
+    public ImagePicker setCropRequestedSize(int width, int height) {
+        this.cropRequestedWidth = width;
+        this.cropRequestedHeight = height;
+        return this;
+    }
+
+    public ImagePicker setCropActivityTitle(String title) {
+        this.cropActivityTitle = title;
         return this;
     }
 
@@ -161,6 +183,8 @@ public class ImagePicker {
                     CropImage.activity(cropImageUri)
                             .setGuidelines(CropImageView.Guidelines.ON)
                             .setAspectRatio(aspectRatioX, aspectRatioY)
+                            .setRequestedSize(cropRequestedWidth, cropRequestedHeight)
+                            .setActivityTitle(cropActivityTitle)
                             .start(activity);
                 } else {
                     listener.onImagePicked(cropImageUri);
@@ -216,10 +240,13 @@ public class ImagePicker {
                 CropImage.activity(imageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setAspectRatio(aspectRatioX, aspectRatioY)
+                        .setRequestedSize(cropRequestedWidth, cropRequestedHeight)
+                        .setActivityTitle(cropActivityTitle)
                         .start(activity);
             } else {
                 listener.onImagePicked(imageUri);
             }
         }
     }
+
 }
